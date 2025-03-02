@@ -1,4 +1,4 @@
-name = "telegram-api-proxy"
+name = "cf-workers-proxy"
 main = "src/index.js"
 compatibility_date = "2024-03-01"
 
