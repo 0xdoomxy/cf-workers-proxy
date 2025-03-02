@@ -1,0 +1,10 @@
+name = "telegram-api-proxy"
+main = "src/index.js"
+compatibility_date = "2024-03-01"
+
+[vars]
+WHITELIST_PATHS = '["/bot8178658513:"]'
+TARGET_HOST = "api.telegram.org"
+
+[build]
+upload.format = "modules"
