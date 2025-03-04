@@ -101,8 +101,8 @@ class Router {
 async function handler(request) {
     console.log("原始请求头:", JSON.stringify([...request.headers]));
     console.log("请求方法:", request.method);
-    const body = await request.clone().text();
-    console.log("原始请求体:", body);
+    const console_body = await request.clone().text();
+    console.log("原始请求体:", console_body);
     const { url, method, headers } = request;
     const { pathname, search } = new URL(url);
     const { bot_token, api_method } = pathname.match(URL_PATH_REGEX).groups;
