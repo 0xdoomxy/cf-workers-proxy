@@ -99,10 +99,6 @@ class Router {
  * @param {Request} request the incoming request
  */
 async function handler(request) {
-    console.log("原始请求头:", JSON.stringify([...request.headers]));
-    console.log("请求方法:", request.method);
-    const console_body = await request.clone().text();
-    console.log("原始请求体:", console_body);
     const { url, method, headers } = request;
     const { pathname, search } = new URL(url);
     const { bot_token, api_method } = pathname.match(URL_PATH_REGEX).groups;
@@ -117,7 +113,14 @@ async function handler(request) {
 
     // 获取原始请求体
     const body = method === 'POST' ? await request.clone().text() : null;
-
+    console.log({
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers
+        },
+        body: method === 'POST' ? body : null
+    })
     // 转发请求
     const response = await fetch(api_url, {
         method,
@@ -127,7 +130,7 @@ async function handler(request) {
         },
         body: method === 'POST' ? body : null
     });
-
+    console.log(response);
     return new Response(await response.text(), {
         status: response.status,
         headers: {
