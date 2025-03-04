@@ -8,3 +8,7 @@ TARGET_HOST = "api.telegram.org"
 
 [build]
 upload.format = "modules"
+
+[observability]
+enabled = true
+head_sampling_rate = 1 # optional. default = 1.
