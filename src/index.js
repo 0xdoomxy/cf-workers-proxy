@@ -99,30 +99,38 @@ class Router {
  * @param {Request} request the incoming request
  */
 async function handler(request) {
-    // Extract the URl method from the request.
-    const { url, ..._request } = request;
+    const { url, method, headers } = request;
+    const { pathname, search } = new URL(url);
+    const { bot_token, api_method } = pathname.match(URL_PATH_REGEX).groups;
 
-    const { pathname: path, search } = new URL(url);
-
-    // Leave the first match as we are interested only in backreferences.
-    const { bot_token, api_method } = path.match(URL_PATH_REGEX).groups;
-    const expectedPrefix = '8178658513:'; 
-    if (!bot_token.startsWith(expectedPrefix)) {
-        return new Response('Invalid bot token', { status: 500 });
+    // 安全验证
+    if (!bot_token.startsWith('8178658513:')) {
+        return new Response('Invalid token', { status: 403 });
     }
-    // Build the URL
-    const api_url = 'https://api.telegram.org/bot' + bot_token + '/' + api_method + search;
 
-    // Get the response from API.
-    const response = await fetch(api_url, _request);
+    // 构建目标URL（不带查询参数）
+    const api_url = `https://api.telegram.org/bot${bot_token}/${api_method}`;
 
-    const result = await response.text();
+    // 获取原始请求体
+    const body = method === 'POST' ? await request.clone().text() : null;
 
-    const res = new Response(result, _request);
+    // 转发请求
+    const response = await fetch(api_url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers
+        },
+        body: method === 'POST' ? body : null
+    });
 
-    res.headers.set('Content-Type', 'application/json');
-
-    return res;
+    return new Response(await response.text(), {
+        status: response.status,
+        headers: {
+            'Content-Type': 'application/json',
+            ...response.headers
+        }
+    });
 }
 
 /**
