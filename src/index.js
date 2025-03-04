@@ -102,11 +102,11 @@ async function handler(request) {
     const { url, method, headers } = request;
     const { pathname, search } = new URL(url);
     const { bot_token, api_method } = pathname.match(URL_PATH_REGEX).groups;
-
+    console.log(bot_token)
     // 安全验证
-    if (!bot_token.startsWith('8178658513:')) {
-        return new Response('Invalid token', { status: 403 });
-    }
+    // if (!bot_token.startsWith('8178658513:')) {
+    //     return new Response('Invalid token', { status: 403 });
+    // }
 
     // 构建目标URL（不带查询参数）
     const api_url = `https://api.telegram.org/bot${bot_token}/${api_method}`;
