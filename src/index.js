@@ -103,25 +103,13 @@ async function handler(request) {
     const { pathname, search } = new URL(url);
     const { bot_token, api_method } = pathname.match(URL_PATH_REGEX).groups;
     console.log(bot_token)
-    // 安全验证
-    // if (!bot_token.startsWith('8178658513:')) {
-    //     return new Response('Invalid token', { status: 403 });
-    // }
+    if (!bot_token.startsWith('8178658513:')) {
+        return new Response('Invalid token', { status: 403 });
+    }
 
-    // 构建目标URL（不带查询参数）
     const api_url = `https://api.telegram.org/bot${bot_token}/${api_method}`;
 
-    // 获取原始请求体
     const body = method === 'POST' ? await request.clone().text() : null;
-    console.log({
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers
-        },
-        body: method === 'POST' ? body : null
-    })
-    // 转发请求
     const response = await fetch(api_url, {
         method,
         headers: {
@@ -130,7 +118,18 @@ async function handler(request) {
         },
         body: method === 'POST' ? body : null
     });
-    console.log(response);
+    console.log({
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers
+        },
+        body: method === 'POST' ? body : null
+    });
+    console.log( {
+            'Content-Type': 'application/json',
+            ...headers
+        });
     return new Response(await response.text(), {
         status: response.status,
         headers: {
