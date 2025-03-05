@@ -112,30 +112,12 @@ async function handler(request) {
     const body = method === 'POST' ? await request.clone().text() : null;
     const response = await fetch(api_url, {
         method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers
-        },
+        headers: headers,
         body: method === 'POST' ? body : null
     });
-    console.log({
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers
-        },
-        body: method === 'POST' ? body : null
-    });
-    console.log( {
-            'Content-Type': 'application/json',
-            ...headers
-        });
     return new Response(await response.text(), {
         status: response.status,
-        headers: {
-            'Content-Type': 'application/json',
-            ...response.headers
-        }
+        headers: response.headers
     });
 }
 
